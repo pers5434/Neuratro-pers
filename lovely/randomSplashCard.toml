@@ -1,0 +1,14 @@
+[manifest]
+version = "1.0.0"
+priority = 0
+
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+pattern = "local replace_card = Card(self.title_top.T.x, self.title_top.T.y, 1.2*G.CARD_W*SC_scale, 1.2*G.CARD_H*SC_scale, G.P_CARDS.S_A, G.P_CENTERS.c_base)"
+position = 'at'
+match_indent = true
+payload = '''
+local aceList = {G.P_CARDS.S_A,G.P_CARDS.H_A,G.P_CARDS.D_A,G.P_CARDS.C_A}
+local randAce = aceList[math.random(4)]
+local replace_card = Card(self.title_top.T.x, self.title_top.T.y, 1.2*G.CARD_W*SC_scale, 1.2*G.CARD_H*SC_scale, randAce, G.P_CENTERS.c_base)'''

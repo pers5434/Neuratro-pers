@@ -1,0 +1,1 @@
+SMODS.Shader({ key = 'filtered', path = 'filtered.fs' })
