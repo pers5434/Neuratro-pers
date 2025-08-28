@@ -84,7 +84,7 @@ SMODS.Enhancement{
   loc_txt = {
     name = "Bloody",
     text = {
-      "{C:green}#1# in #2#{} chance to spread", "to {C:attention}adjacent{} cards", "when {C:attention}played{}",}},
+      "{C:green}#1# in #2#{} chance to spread", "to {C:attention}adjacent{} cards", "after {C:attention}played{}",}},
   atlas = "neuroEnh",
   pos = { x = 6 , y = 1},
   config = { extra = {base = 1, odds = 3}},
@@ -92,16 +92,29 @@ SMODS.Enhancement{
     return{vars= {card.ability.extra.base * (G.GAME.probabilities.normal or 1), card.ability.extra.odds}}
   end,
   calculate = function (self, card, context)
-    if context.before then
+    if context.after then
+      local trg = false
       for pos,pcard in ipairs(context.full_hand) do 
         if pcard == card and pseudorandom("blood") < (card.ability.extra.base * (G.GAME.probabilities.normal or 1))/(card.ability.extra.odds) then
           if context.full_hand[pos - 1] then
-            context.full_hand[pos - 1]:set_ability(G.P_CENTERS["m_blood"], nil, true)
+            sea(
+            function ()
+              context.full_hand[pos - 1]:set_ability(G.P_CENTERS["m_blood"], nil, true)
+              return true
+            end)
           end
           if context.full_hand[pos + 1] then
-            context.full_hand[pos + 1]:set_ability(G.P_CENTERS["m_blood"], nil, true)
+            sea(
+            function ()
+              context.full_hand[pos + 1]:set_ability(G.P_CENTERS["m_blood"], nil, true)
+              return true
+            end)
           end
+          trg = true
         end
+      end
+      if trg then
+        return {message = "Spread!"}
       end
     end
   end

@@ -36,6 +36,24 @@ SMODS.Consumable {
         info_queue[#info_queue + 1] = G.P_CENTERS[card.ability.mod_conv]
         return { vars = { card.ability.max_highlighted, localize { type = 'name_text', set = 'Enhanced', key = card.ability.mod_conv } } }
     end}
+SMODS.Consumable {
+    key = 'blood_set',
+    loc_txt ={
+      name = "The Juice",
+      text = {
+        "Enhance {C:attention}1{}",
+        "selected card to",
+        "{C:attention}Bloody card{}"}
+            },
+    set = 'Tarot',
+    discovered = false, 
+    atlas = "neuroCons",
+    pos = { x = 1, y = 0 },
+    config = { max_highlighted = 1, mod_conv = 'm_blood' },
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS[card.ability.mod_conv]
+        return { vars = { card.ability.max_highlighted, localize { type = 'name_text', set = 'Enhanced', key = card.ability.mod_conv } } }
+    end}
 -- Spectrals
 SMODS.Consumable {
     key = 'shomimi_set_seal',

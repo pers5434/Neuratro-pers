@@ -2095,8 +2095,8 @@ idea = {"Evil Sand"},
 art = {"None"},
 code = {"1srscx4"}
 },
-rarity = 3,
-cost = 9, 
+rarity = 2,
+cost = 8, 
 unlocked = true, 
 discovered = false, 
 blueprint_compat = true, 
@@ -2312,7 +2312,113 @@ return { mult = card.ability.extra.mult , chips = card.ability.extra.chips }
 end
 end
 }
+--Layna
 
+SMODS.Joker{
+key = "layna",
+loc_txt = {
+name = "Layna",
+text = {
+"If scored hand has a {C:attention}9{},",
+"all scored cards give {X:mult,C:white}x#1#{} mult",
+"and {C:red,E:1}destroy{} themselves."
+}
+},
+credits = {
+idea = {"1srscx4"},
+art = {"Etzyio+"},
+code = {"1srscx4"}
+},
+atlas = "neuroCustomJokers", pools = { ["neurJoker"] = true}, 
+rarity = 3, 
+cost = 9, 
+unlocked = true, 
+discovered = false, 
+blueprint_compat = true, 
+eternal_compat = true, 
+perishable_compat = true,
+pos = { x = 9, y = 3 },
+in_pool = function(self, args) 
+return true
+end,
+config = { extra = {xmult = 3, works = false} },
+loc_vars = function(self,info_queue,center)
+return {vars = {center.ability.extra.xmult} }
+end,
+calculate = function (self, card, context)
+if context.before then
+for _,play_card in ipairs(context.scoring_hand) do 
+if play_card:get_id() == 9 then
+card.ability.extra.works = true
+return {message = "Active"}
+else 
+card.ability.extra.works = false
+end
+end
+end
+if context.individual and context.cardarea == G.play and context.other_card and card.ability.extra.works then
+return {xmult = card.ability.extra.xmult, func = function() SMODS.destroy_cards(context.other_card)
+end}
+end
+end
+}
+SMODS.Joker{
+  key = "cakelayna",
+  loc_txt = {
+    name = "Abomnination Cake",
+    text = {
+      "Gives {C:mult}+#1#{} Mult for each",
+      "{C:attention}Bloody card{} in {C:attention}full deck{}.",
+      "{C:inactive}(Currently: {C:mult}+#2#{C:inactive} Mult)"
+    }
+  },
+credits = {
+idea = {"1srscx4"},
+art = {"None"},
+code = {"1srscx4"}
+},
+atlas = "neuroCustomJokers", pools = { ["neurJoker"] = true}, 
+rarity = 1, 
+cost = 5, 
+unlocked = true, 
+discovered = false, 
+blueprint_compat = true, 
+eternal_compat = true, 
+perishable_compat = true,
+pos = { x = 1, y = 0 },
+in_pool = function(self, args) 
+for _,pcard in ipairs(G.playing_cards) do
+  if SMODS.has_enhancement(pcard,"m_blood") then
+    return true
+  end
+end
+return false
+end,
+config = { extra = {mult = 3} },
+loc_vars = function(self,info_queue,center)
+  info_queue[#info_queue+1] = G.P_CENTERS.m_blood
+  local blood = 0
+  if G.playing_cards then
+    for _,pcard in ipairs(G.playing_cards) do
+      if SMODS.has_enhancement(pcard,"m_blood") then
+        blood = blood + 1
+      end
+    end
+  end
+return {vars = {center.ability.extra.mult, center.ability.extra.mult * blood} }
+end,
+calculate = function (self, card, context)
+  if context.joker_main then
+    local blood = 0
+    for _,pcard in ipairs(G.playing_cards) do
+      if SMODS.has_enhancement(pcard,"m_blood") then
+        blood = blood + 1
+      end
+    end
+    return {mult = card.ability.extra.mult * blood}
+  end
+end
+}
 --Other peopled
 SMODS.Joker{
 key = "void",
@@ -2457,54 +2563,6 @@ return { dollars = card.ability.extra.money }
 end
 end
 
-end
-}
-SMODS.Joker{
-key = "layna",
-loc_txt = {
-name = "Layna",
-text = {
-"If scored hand has a {C:attention}9{},",
-"all scored cards give {X:mult,C:white}x#1#{} mult",
-"and {C:red,E:1}destroy{} themselves."
-}
-},
-credits = {
-idea = {"1srscx4"},
-art = {"Etzyio+"},
-code = {"1srscx4"}
-},
-atlas = "neuroCustomJokers", pools = { ["neurJoker"] = true}, 
-rarity = 3, 
-cost = 9, 
-unlocked = true, 
-discovered = false, 
-blueprint_compat = true, 
-eternal_compat = true, 
-perishable_compat = true,
-pos = { x = 9, y = 3 },
-in_pool = function(self, args) 
-return true
-end,
-config = { extra = {xmult = 3, works = false} },
-loc_vars = function(self,info_queue,center)
-return {vars = {center.ability.extra.xmult} }
-end,
-calculate = function (self, card, context)
-if context.before then
-for _,play_card in ipairs(context.scoring_hand) do 
-if play_card:get_id() == 9 then
-card.ability.extra.works = true
-return {message = "Active"}
-else 
-card.ability.extra.works = false
-end
-end
-end
-if context.individual and context.cardarea == G.play and context.other_card and card.ability.extra.works then
-return {xmult = card.ability.extra.xmult, func = function() SMODS.destroy_cards(context.other_card)
-end}
-end
 end
 }
 SMODS.Joker{
@@ -2983,7 +3041,7 @@ blueprint_compat = true,
 eternal_compat = true, 
 perishable_compat = true, 
 pos = {x = 7, y = 2},
-config = { extra = { min = 1 , max = 60} },
+config = { extra = { min = 1 , max = 40} },
 loc_vars = function(self,info_queue,center)
 return {vars = {center.ability.extra.min/10,center.ability.extra.max/10}}
 end,
